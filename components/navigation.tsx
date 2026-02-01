@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePanier } from './contexte-panier'
-import { Menu, X, Search, ShoppingBag, User, Heart } from 'lucide-react'
+import { Menu, X, Search, ShoppingBag, User, Heart, Layers, Star, Info } from 'lucide-react'
 
 const liensNavigation = [
   { nom: 'Accueil', href: '/' },
@@ -28,18 +28,17 @@ export function Navigation() {
   }, [])
 
   return (
-    <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        defiler 
-          ? 'bg-background/95 backdrop-blur-md shadow-sm' 
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${defiler
+          ? 'bg-background/95 backdrop-blur-md shadow-sm'
           : 'bg-transparent'
-      }`}
+        }`}
     >
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between">
           {/* Logo */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="font-serif text-2xl font-bold tracking-wider text-foreground transition-transform hover:scale-105"
           >
             MAISON
@@ -61,30 +60,30 @@ export function Navigation() {
 
           {/* Actions */}
           <div className="flex items-center gap-4">
-            <button 
+            <button
               onClick={() => setRecherche(!recherche)}
               className="p-2 text-foreground/80 hover:text-foreground transition-colors hover:scale-110 transform duration-200"
               aria-label="Rechercher"
             >
               <Search className="h-5 w-5" />
             </button>
-            
-            <button 
+
+            <button
               className="hidden sm:block p-2 text-foreground/80 hover:text-foreground transition-colors hover:scale-110 transform duration-200"
               aria-label="Favoris"
             >
               <Heart className="h-5 w-5" />
             </button>
-            
-            <Link 
+
+            <Link
               href="/connexion"
               className="hidden sm:block p-2 text-foreground/80 hover:text-foreground transition-colors hover:scale-110 transform duration-200"
               aria-label="Compte"
             >
               <User className="h-5 w-5" />
             </Link>
-            
-            <button 
+
+            <button
               onClick={ouvrirPanier}
               className="relative p-2 text-foreground/80 hover:text-foreground transition-colors hover:scale-110 transform duration-200"
               aria-label="Panier"
@@ -98,7 +97,7 @@ export function Navigation() {
             </button>
 
             {/* Menu mobile */}
-            <button 
+            <button
               onClick={() => setMenuOuvert(!menuOuvert)}
               className="md:hidden p-2 text-foreground/80 hover:text-foreground transition-colors"
               aria-label="Menu"
@@ -122,26 +121,54 @@ export function Navigation() {
       </nav>
 
       {/* Menu mobile overlay */}
-      <div 
-        className={`md:hidden fixed inset-0 bg-background z-40 transition-all duration-500 ${
-          menuOuvert ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
+      <div
+        className={`md:hidden fixed inset-0 bg-background/98 backdrop-blur-xl z-40 transition-all duration-500 ease-in-out ${menuOuvert ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
+          }`}
         style={{ top: '80px' }}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-8 p-8">
-          {liensNavigation.map((lien, index) => (
+        <div className="flex flex-col h-[calc(100vh-80px)] overflow-y-auto px-6 py-12">
+          <div className="flex flex-col gap-6">
+            {[
+              { nom: 'Accueil', href: '/', icon: <Heart className="h-5 w-5" /> },
+              { nom: 'Boutique', href: '/boutique', icon: <ShoppingBag className="h-5 w-5" /> },
+              { nom: 'Collections', href: '/boutique?categorie=vetements', icon: <Layers className="h-5 w-5" /> },
+              { nom: 'Nouveautés', href: '/boutique?nouveautes=true', icon: <Star className="h-5 w-5" /> },
+              { nom: 'À propos', href: '#apropos', icon: <Info className="h-5 w-5" /> },
+            ].map((lien, index) => (
+              <Link
+                key={lien.nom}
+                href={lien.href}
+                onClick={() => setMenuOuvert(false)}
+                className={`flex items-center gap-4 text-2xl font-serif text-foreground hover:text-accent transition-all duration-300 ${menuOuvert ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+                  }`}
+                style={{ transitionDelay: `${index * 50}ms` }}
+              >
+                <span className="p-2 bg-secondary rounded-full text-accent">
+                  {lien.icon}
+                </span>
+                {lien.nom}
+              </Link>
+            ))}
+
+            <hr className="my-4 border-muted" />
+
             <Link
-              key={lien.nom}
-              href={lien.href}
+              href="/connexion"
               onClick={() => setMenuOuvert(false)}
-              className={`text-3xl font-serif text-foreground hover:text-accent transition-all duration-300 ${
-                menuOuvert ? 'animate-fade-in' : ''
-              }`}
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className={`flex items-center gap-4 text-2xl font-serif text-foreground hover:text-accent transition-all duration-300 ${menuOuvert ? 'translate-x-0 opacity-100' : 'translate-x-10 opacity-0'
+                }`}
+              style={{ transitionDelay: `250ms` }}
             >
-              {lien.nom}
+              <span className="p-2 bg-accent/10 rounded-full text-accent">
+                <User className="h-5 w-5" />
+              </span>
+              Connexion
             </Link>
-          ))}
+          </div>
+
+          <div className="mt-auto pt-12 text-center text-sm text-muted-foreground">
+            <p>© 2024 MAISON. Tous droits réservés.</p>
+          </div>
         </div>
       </div>
     </header>
